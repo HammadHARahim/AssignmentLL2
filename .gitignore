@@ -9,5 +9,8 @@ __pycache__/
 .DS_Store
 artifacts/colab_run.log
 artifacts/export_run.log
+artifacts/adapter_beta_*.tar.gz
+artifacts/**/adapter/
+artifacts/merged_*/
 web/node_modules/
 web/.next/
