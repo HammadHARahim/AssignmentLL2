@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { generateLocal } from "@/lib/local-generate";
 import { MODELS, type ModelId } from "@/lib/models";
 
 type Role = "user" | "assistant" | "system";
@@ -22,20 +23,21 @@ export default function HomePage() {
   const [model, setModel] = useState<ModelId>("dpo-0.1");
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "welcome",
       role: "system",
       content:
-        "AlignLab chat — switch Base / DPO β=0.1 / DPO β=0.5 and compare how Lab 10 alignment changes replies.",
+        "AlignLab runs the checkpoints in your browser (WebAssembly). First reply per model downloads weights — then switch Base / DPO β=0.1 / β=0.5 to compare.",
     },
   ]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, busy]);
+  }, [messages, busy, status]);
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -44,6 +46,7 @@ export default function HomePage() {
     setError(null);
     setBusy(true);
     setInput("");
+    setStatus("Preparing model…");
 
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
@@ -53,21 +56,21 @@ export default function HomePage() {
     setMessages((prev) => [...prev, userMsg]);
 
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, model }),
+      const reply = await generateLocal(model, trimmed, (p) => {
+        if (p.status === "progress" && p.progress != null) {
+          setStatus(`Downloading ${p.file || "weights"}… ${Math.round(p.progress)}%`);
+        } else if (p.status === "done") {
+          setStatus("Generating…");
+        } else {
+          setStatus(p.status);
+        }
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Request failed");
-      }
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: data.reply,
+          content: reply || "(empty generation)",
           model,
         },
       ]);
@@ -76,6 +79,7 @@ export default function HomePage() {
       setError(msg);
     } finally {
       setBusy(false);
+      setStatus(null);
     }
   }
 
@@ -102,8 +106,8 @@ export default function HomePage() {
           AlignLab
         </h1>
         <p className="anim-rise-delay mt-3 max-w-xl text-base leading-relaxed text-black/65 sm:text-lg">
-          Chat with the same prompts across checkpoints. Pick a model, ask once, switch, ask again —
-          evidence over vibes.
+          Chat with the same prompts across checkpoints. Models run locally in the browser — no
+          server GPU required.
         </p>
       </header>
 
@@ -153,9 +157,7 @@ export default function HomePage() {
           {messages.map((m) => (
             <article
               key={m.id}
-              className={`max-w-[92%] sm:max-w-[80%] ${
-                m.role === "user" ? "ml-auto text-right" : ""
-              }`}
+              className={`max-w-[92%] sm:max-w-[80%] ${m.role === "user" ? "ml-auto text-right" : ""}`}
             >
               <p className="mb-1 font-[family-name:var(--font-mono)] text-[10px] tracking-widest uppercase text-black/40">
                 {m.role === "user"
@@ -183,12 +185,12 @@ export default function HomePage() {
           ))}
 
           {busy && (
-            <div className="flex items-center gap-1.5 text-black/50">
+            <div className="flex flex-wrap items-center gap-2 text-black/50">
               <span className="typing-dot h-1.5 w-1.5 rounded-full bg-current" />
               <span className="typing-dot h-1.5 w-1.5 rounded-full bg-current" />
               <span className="typing-dot h-1.5 w-1.5 rounded-full bg-current" />
-              <span className="ml-2 font-[family-name:var(--font-mono)] text-xs">
-                generating with {active.label}
+              <span className="ml-1 font-[family-name:var(--font-mono)] text-xs">
+                {status || `working · ${active.label}`}
               </span>
             </div>
           )}
@@ -251,7 +253,7 @@ export default function HomePage() {
       </section>
 
       <footer className="mt-6 font-[family-name:var(--font-mono)] text-[11px] tracking-wide text-black/45">
-        Qwen2.5-0.5B · UltraFeedback DPO · University of Gwadar Lab 10
+        In-browser WASM · Qwen2.5-0.5B · UltraFeedback DPO · Lab 10
       </footer>
     </main>
   );

@@ -4,36 +4,31 @@ export const MODELS: {
   id: ModelId;
   label: string;
   blurb: string;
-  envKey: string;
-  fallbackHfId: string;
+  /** Hugging Face model id for @huggingface/transformers (ONNX) */
+  hfId: string;
 }[] = [
   {
     id: "base",
     label: "Base",
     blurb: "Qwen2.5-0.5B before alignment",
-    envKey: "HF_MODEL_BASE",
-    fallbackHfId: "Qwen/Qwen2.5-0.5B",
+    hfId: "onnx-community/Qwen2.5-0.5B",
   },
   {
     id: "dpo-0.1",
     label: "DPO β=0.1",
     blurb: "Aligned with stronger preference pull",
-    envKey: "HF_MODEL_DPO_01",
-    fallbackHfId: "Qwen/Qwen2.5-0.5B",
+    hfId: "HammadHARahim/qwen25-0.5b-dpo-beta01-onnx",
   },
   {
     id: "dpo-0.5",
     label: "DPO β=0.5",
     blurb: "Aligned with stronger KL to reference",
-    envKey: "HF_MODEL_DPO_05",
-    fallbackHfId: "Qwen/Qwen2.5-0.5B",
+    hfId: "HammadHARahim/qwen25-0.5b-dpo-beta05-onnx",
   },
 ];
 
-export function resolveHfModelId(model: ModelId): string {
-  const entry = MODELS.find((m) => m.id === model);
-  if (!entry) return MODELS[0].fallbackHfId;
-  return process.env[entry.envKey] || entry.fallbackHfId;
+export function hfIdFor(model: ModelId): string {
+  return MODELS.find((m) => m.id === model)?.hfId ?? MODELS[0].hfId;
 }
 
 export function isModelId(value: string): value is ModelId {

@@ -1,0 +1,13 @@
+
+[colab] A new version of Colab CLI is available: 0.8.0 (current: 0.7.5)
+[colab] Run 'colab update' to update.
+[colab] To silence this check, set "enable_update_check": false in ~/.config/colab-cli/settings.json
+
+Multiple distributions found for package optimum. Picked distribution: optimum
+Flax classes are deprecated and will be removed in Diffusers v0.40.0. We recommend migrating to PyTorch classes or pinning your version of Diffusers.
+Flax classes are deprecated and will be removed in Diffusers v0.40.0. We recommend migrating to PyTorch classes or pinning your version of Diffusers.
+/usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+WARNING:huggingface_hub._login:Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+exporting HammadHARahim/qwen25-0.5b-dpo-beta01
