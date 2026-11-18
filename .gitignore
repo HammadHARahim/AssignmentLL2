@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.vercel/
+.env
+.env.local
+.env*.local
+__pycache__/
+*.pyc
+.DS_Store
+artifacts/colab_run.log
+artifacts/export_run.log
+web/node_modules/
+web/.next/

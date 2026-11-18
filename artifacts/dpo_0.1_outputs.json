@@ -1,0 +1,32 @@
+{
+  "P1": {
+    "type": "explanation",
+    "prompt": "Explain how a transformer attention layer decides which tokens matter, in plain language for a first-year CS student.",
+    "response": "A transformer attention layer decides which tokens matter by combining information from different parts of the input text. Imagine you're trying to understand a story, and you have a list of words that are important for understanding the story. The transformer attention layer combines information from different parts of the story to make a prediction about which words to focus on next. This way, the layer can learn from the different parts of the story and make better predictions about what words to focus on."
+  },
+  "P2": {
+    "type": "advice",
+    "prompt": "I have a midterm in three days and keep procrastinating. Give a concrete day-by-day plan I can follow.",
+    "response": "Sure, I can help you plan your day for the midterm. Here's a breakdown of how to approach it:\n\n1. **Morning Preparation:**\n   - Wake up at 7:00 AM.\n   - Eat breakfast and brush your teeth.\n   - Go to the library or study room for 30 minutes to review notes and practice problems.\n\n2. **Study Session:**\n   - Spend 1-2 hours reviewing key concepts and practice problems.\n   - Focus on topics you have difficulty understanding or missed in class.\n\n3. **Midterm Review:**\n   - Review all the previous topics and concepts.\n   - Practice solving examples and problems from previous exams.\n\n4. **Class Review:**\n   - Attend the first lecture and review any notes or homework you completed.\n   - Work on additional practice problems or review sessions if necessary.\n\n5. **Midterm Practice:**\n   - Spend an hour or so working on practice questions or reviewing past exams.\n   - Ensure you have a clear understanding of the material covered in class.\n\n6. **Midterm Test:**\n   - Take the actual midterm exam.\n   - Follow the test instructions carefully to avoid any mistakes.\n   - If you have any questions, do not hesitate to ask the teacher or a"
+  },
+  "P3": {
+    "type": "summarisation",
+    "prompt": "Summarise the idea of overfitting in machine learning in exactly three short bullet points.",
+    "response": "irebase"
+  },
+  "P4": {
+    "type": "professional_writing",
+    "prompt": "Write a short, polite email declining a Friday meeting because of a prior exam, and propose two alternative times.",
+    "response": "Dear [Recipient's Name],\n\nI hope this email finds you well. I am writing to inquire about a Friday meeting that I have scheduled with [Name of Person A] for [Date]. Given that I have already taken the exam and I believe the meeting is not essential to the work, I would like to propose two alternative times instead.\n\nFirst, I would like to request that we meet on [Time A]. This alternative time allows me to attend the meeting without any impact on my schedule and gives me the opportunity to catch up on my work while still remaining within my budget.\n\nSecondly, I would like to suggest that we meet on [Time B]. This alternative time offers a more convenient meeting time and allows me to focus on my work without the distraction of the exam. Additionally, it provides me with the opportunity to engage in a more productive conversation with [Name of Person B].\n\nPlease let me know what you think about these two alternative times and which one you would prefer. I would greatly appreciate your consideration in making this decision.\n\nThank you for your time and attention to this matter.\n\nBest regards,\n\n[Your Name]"
+  },
+  "P5": {
+    "type": "reasoning",
+    "prompt": "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost? Show the steps.",
+    "response": "Let x be the cost of the ball. We know that the cost of the bat is $1.00 more than the ball, so the cost of the bat is x + $1.00.\n\nThe total cost of the bat and the ball is $1.10, so we can write the equation:\nx + (x + $1.00) = $1.10\n\nSimplifying the equation:\n2x + $1.00 = $1.10\n\nSubtract $1.00 from both sides:\n2x = $0.10\n\nDivide both sides by 2:\nx = $0.05\n\nThe ball costs $0.05."
+  },
+  "P6": {
+    "type": "question_answering",
+    "prompt": "What is the capital of Pakistan, and briefly why was it chosen over Karachi?",
+    "response": "Karachi is the capital of Pakistan, as it is the city where the country's political, economic, and cultural center is located. It was chosen over Karachi because Karachi is the largest city in Pakistan and has a higher population than Karachi. Karachi has a smaller population than Islamabad, which is the capital city of Pakistan. Karachi is also known for its rich history, cultural heritage, and natural beauty, making it a popular destination for tourists and locals alike."
+  }
+}

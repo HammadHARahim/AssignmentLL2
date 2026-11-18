@@ -1,0 +1,14 @@
+{
+  "beta": 0.1,
+  "model": "Qwen/Qwen2.5-0.5B",
+  "subset_size": 1000,
+  "max_steps": 200,
+  "lr": 5e-05,
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05
+  },
+  "max_length": 512,
+  "seed": 42
+}

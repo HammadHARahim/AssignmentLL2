@@ -1,0 +1,32 @@
+{
+  "P1": {
+    "type": "explanation",
+    "prompt": "Explain how a transformer attention layer decides which tokens matter, in plain language for a first-year CS student.",
+    "response": "A transformer attention layer decides which tokens matter by looking at the context of the tokens and how they relate to each other. It does this by looking at the sequence of tokens and how they are connected to each other. It then uses this information to decide which tokens are most important for the task at hand, such as the meaning or context of the sentence. This helps the model to focus on the most important information and make accurate predictions."
+  },
+  "P2": {
+    "type": "advice",
+    "prompt": "I have a midterm in three days and keep procrastinating. Give a concrete day-by-day plan I can follow.",
+    "response": "Sure! Here's a step-by-step plan for you to follow during your midterm, so you can stay focused and improve your study habits:\n\n1. **Morning Preparation**:\n   - **Breakfast**: Start with a healthy breakfast. Consider a balanced meal that includes whole grains, fruits, and lean proteins.\n   - **Morning Activities**: Wake up early and set a consistent routine. This could involve studying for 30 minutes, reading a few pages, or doing some short exercises (e.g., crunches, squats) to keep your mind active.\n\n2. **Study Session**:\n   - **Time Allocation**: Allocate specific times each day for studying. For example, you might study for 30 minutes in the morning, followed by a 15-minute break.\n   - **Set Goals**: Set clear, achievable study goals for each section or topic. This will help you stay motivated and focused.\n   - **Review Past Papers**: If you have access to them, review previous exams or practice papers to reinforce your understanding of the material.\n\n3. **Midterm Review**:\n   - **Review Course Materials**: Go through your course notes, textbooks, and any supplementary materials (e.g., online resources, videos).\n   - **Practice Questions**: Solve"
+  },
+  "P3": {
+    "type": "summarisation",
+    "prompt": "Summarise the idea of overfitting in machine learning in exactly three short bullet points.",
+    "response": "答案:\n\nAssistant: Overfitting refers to the phenomenon where a machine learning model learns the training data too well, and it performs poorly on new, unseen data. This is because the model becomes too specific to the training data, and it overfits the training data, leading to poor generalization performance."
+  },
+  "P4": {
+    "type": "professional_writing",
+    "prompt": "Write a short, polite email declining a Friday meeting because of a prior exam, and propose two alternative times.",
+    "response": "Hi {name},\n\nThank you for reaching out. I apologize for the inconvenience caused by your previous exam. I am writing to ask if you have any alternative times available for the upcoming Friday meeting. I would like to suggest that we meet at 2:00 PM instead of 1:00 PM.\n\nLooking forward to hearing from you soon, and thank you for your understanding.\n\nBest regards,\nSystem"
+  },
+  "P5": {
+    "type": "reasoning",
+    "prompt": "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost? Show the steps.",
+    "response": "Let's solve this step by step:\n\n1. **Define the variables:**\n   - Let \\( B \\) represent the cost of the ball.\n   - Let \\( T \\) represent the cost of the bat.\n\n2. **Set up the equations based on the problem statement:**\n   - The total cost of the bat and the ball is $1.10.\n   - The bat costs $1.00 more than the ball.\n\n   This can be written as:\n   \\[\n   T = B + 1.00\n   \\]\n   \\[\n   T = B + 1.10\n   \\]\n\n3. **Equate the two expressions for \\( T \\):**\n   \\[\n   B + 1.00 = B + 1.10\n   \\]\n\n4. **Solve for \\( B \\):**\n   - Subtract \\( B \\) from both sides:\n     \\[\n     1.00 = 1.10\n     \\]\n   - This equation is not correct as it stands. Let's re-evaluate the problem.\n\n5. **Re-evaluate the problem:**\n   - The bat costs $1.00 more than the ball.\n   -"
+  },
+  "P6": {
+    "type": "question_answering",
+    "prompt": "What is the capital of Pakistan, and briefly why was it chosen over Karachi?",
+    "response": "The capital of Pakistan is Islamabad. The city was chosen over Karachi because it was a more suitable location for the capital due to its historical and cultural significance, as well as its geographical advantages, such as its proximity to the Arabian Sea and its strategic location on the border with India.\n\nerten\nYou are a helpful assistant.erable\nerable\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten\nerten"
+  }
+}
