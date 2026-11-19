@@ -14,3 +14,4 @@ artifacts/**/adapter/
 artifacts/merged_*/
 web/node_modules/
 web/.next/
+artifacts/onnx_convert.log
