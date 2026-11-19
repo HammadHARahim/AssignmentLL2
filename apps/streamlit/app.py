@@ -14,6 +14,10 @@ MODELS = {
     "DPO β=0.5": "HammadHARahim/qwen25-0.5b-dpo-beta05",
 }
 
+# DPO Hub uploads saved a broken tokenizer_config (extra_special_tokens as list).
+# Always tokenize with the base Qwen tokenizer — vocab matches the fine-tunes.
+TOKENIZER_ID = "Qwen/Qwen2.5-0.5B"
+
 STARTERS = [
     "Explain attention in plain language for a first-year CS student.",
     "Summarise overfitting in exactly three short bullet points.",
@@ -35,15 +39,21 @@ def _hf_token() -> str | None:
 
 
 @st.cache_resource(show_spinner=False)
-def load_bundle(model_id: str):
-    """Load one checkpoint + tokenizer (cached per model id)."""
+def load_tokenizer():
+    """Shared base tokenizer for all checkpoints."""
     token = _hf_token()
     tok = AutoTokenizer.from_pretrained(
-        model_id, trust_remote_code=True, token=token
+        TOKENIZER_ID, trust_remote_code=True, token=token
     )
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    return tok
 
+
+@st.cache_resource(show_spinner=False)
+def load_model(model_id: str):
+    """Load one causal LM checkpoint (cached per Hub id)."""
+    token = _hf_token()
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
@@ -56,7 +66,7 @@ def load_bundle(model_id: str):
     if not torch.cuda.is_available():
         model = model.to("cpu")
     model.eval()
-    return model, tok
+    return model
 
 
 def generate(model, tokenizer, user_message: str) -> str:
@@ -65,7 +75,8 @@ def generate(model, tokenizer, user_message: str) -> str:
         f"User: {user_message}\nAssistant:"
     )
     inputs = tokenizer(prompt, return_tensors="pt")
-    inputs = {k: v.to(model.device) for k, v in inputs.items()}
+    device = next(model.parameters()).device
+    inputs = {k: v.to(device) for k, v in inputs.items()}
     with torch.no_grad():
         out = model.generate(
             **inputs,
@@ -137,7 +148,8 @@ if prompt:
     with st.chat_message("assistant"):
         with st.spinner(f"Loading / generating · {label}"):
             try:
-                model, tokenizer = load_bundle(model_id)
+                tokenizer = load_tokenizer()
+                model = load_model(model_id)
                 reply = generate(model, tokenizer, prompt) or "(empty generation)"
             except Exception as exc:  # noqa: BLE001 — show Hub/OOM errors in UI
                 reply = f"**Error:** {exc}"
