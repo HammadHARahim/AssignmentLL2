@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import gc
 import os
+import traceback
 
 import streamlit as st
 import torch
@@ -14,8 +16,7 @@ MODELS = {
     "DPO β=0.5": "HammadHARahim/qwen25-0.5b-dpo-beta05",
 }
 
-# DPO Hub uploads saved a broken tokenizer_config (extra_special_tokens as list).
-# Always tokenize with the base Qwen tokenizer — vocab matches the fine-tunes.
+# DPO Hub uploads once shipped a broken tokenizer_config; use base tokenizer always.
 TOKENIZER_ID = "Qwen/Qwen2.5-0.5B"
 
 STARTERS = [
@@ -24,23 +25,27 @@ STARTERS = [
     "A bat and a ball cost $1.10. The bat costs $1 more than the ball. How much is the ball?",
 ]
 
-MAX_NEW_TOKENS = 160
+MAX_NEW_TOKENS = 96
 
 
 def _hf_token() -> str | None:
-    # Streamlit Cloud secrets first, then env / local hf login
     try:
         token = st.secrets.get("HF_TOKEN")  # type: ignore[attr-defined]
         if token:
-            return str(token)
+            return str(token).strip()
     except Exception:
         pass
     return os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
 
 
+def _release_memory() -> None:
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+
 @st.cache_resource(show_spinner=False)
 def load_tokenizer():
-    """Shared base tokenizer for all checkpoints."""
     token = _hf_token()
     tok = AutoTokenizer.from_pretrained(
         TOKENIZER_ID, trust_remote_code=True, token=token
@@ -50,22 +55,33 @@ def load_tokenizer():
     return tok
 
 
-@st.cache_resource(show_spinner=False)
-def load_model(model_id: str):
-    """Load one causal LM checkpoint (cached per Hub id)."""
+def get_model(model_id: str):
+    """Keep only one checkpoint resident — Cloud free tier OOMs with 2–3 models."""
+    slot = st.session_state.get("_model_slot")
+    if slot and slot.get("id") == model_id and slot.get("model") is not None:
+        return slot["model"]
+
+    # Drop previous checkpoint before loading the next.
+    if slot and slot.get("model") is not None:
+        st.session_state["_model_slot"] = None
+        del slot
+        _release_memory()
+
     token = _hf_token()
-    dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        dtype=dtype,
-        device_map="auto" if torch.cuda.is_available() else None,
-        low_cpu_mem_usage=True,
-        trust_remote_code=True,
-        token=token,
-    )
-    if not torch.cuda.is_available():
-        model = model.to("cpu")
-    model.eval()
+    # float16 halves RAM vs float32; works on CPU for this 0.5B model.
+    dtype = torch.float16
+    with st.spinner(f"Downloading / loading `{model_id}` (fp16)…"):
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            torch_dtype=dtype,  # wider compatibility than `dtype=`
+            low_cpu_mem_usage=True,
+            trust_remote_code=True,
+            token=token,
+        )
+        model = model.to("cuda" if torch.cuda.is_available() else "cpu")
+        model.eval()
+
+    st.session_state["_model_slot"] = {"id": model_id, "model": model}
     return model
 
 
@@ -111,13 +127,19 @@ label = st.radio(
 model_id = MODELS[label]
 st.caption(f"Hub: [`{model_id}`](https://huggingface.co/{model_id})")
 
+if not _hf_token():
+    st.warning(
+        "No `HF_TOKEN` in Streamlit secrets / env. Public Hub downloads may still work, "
+        "but rate limits are tighter. Add `HF_TOKEN = \"hf_...\"` under App settings → Secrets."
+    )
+
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {
             "role": "assistant",
             "content": (
                 "Pick a checkpoint, then ask the same prompt on each one to compare "
-                "alignment. First load per model downloads weights from Hugging Face."
+                "alignment. Only one model is kept in memory at a time (Cloud-friendly)."
             ),
             "model": None,
         }
@@ -146,13 +168,17 @@ if prompt:
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner(f"Loading / generating · {label}"):
-            try:
-                tokenizer = load_tokenizer()
-                model = load_model(model_id)
+        try:
+            tokenizer = load_tokenizer()
+            model = get_model(model_id)
+            with st.spinner(f"Generating · {label}"):
                 reply = generate(model, tokenizer, prompt) or "(empty generation)"
-            except Exception as exc:  # noqa: BLE001 — show Hub/OOM errors in UI
-                reply = f"**Error:** {exc}"
+        except Exception as exc:  # noqa: BLE001
+            tb = traceback.format_exc()
+            reply = (
+                f"**Error ({type(exc).__name__}):** {exc}\n\n"
+                f"```\n{tb[-2500:]}\n```"
+            )
         st.caption(label)
         st.markdown(reply)
 
